@@ -1,3 +1,8 @@
+/* (c) Craig McIntyre
+ * www.thebirdsbeak.com
+ * Licensed under GPL 3 
+ */
+
 
 // Define the HC-SR04 pins
 const int rgtrig = 13;
@@ -41,12 +46,12 @@ void flash() {
 
 void righttriggred() {
   if (leftstate == HIGH) {
-  unsigned long current = millis();
-  unsigned long elapsed = current - lefttimer;
-  if (elapsed < 500) {
-    flash();
-  }
-
+    unsigned long current = millis();
+    unsigned long elapsed = current - lefttimer;
+    if (elapsed < 500) {
+      flash();
+      Serial.write("left");
+    }
   rightstate = LOW;
   leftstate = LOW;
   }
@@ -54,20 +59,20 @@ void righttriggred() {
 
 void lefttriggered() {
   if (rightstate == HIGH) {
-  unsigned long current = millis();
-  unsigned long elapsed = current - righttimer;
-  if (elapsed < 500) {
-    flash();
-  }
+    unsigned long current = millis();
+    unsigned long elapsed = current - righttimer;
+    if (elapsed < 500) {
+      flash();
+      Serial.write("right")
+    }
   rightstate = LOW;
   leftstate = LOW;
   }
-
 }
 
 
 void rightsensor() {
-long duration, distance;
+  long duration, distance;
   digitalWrite(rgtrig, LOW);
   delayMicroseconds(2);
   digitalWrite(rgtrig, HIGH);
@@ -77,10 +82,10 @@ long duration, distance;
   distance = (duration/2) / 29.1;
 
   if (distance < 10) {
-  digitalWrite(led, HIGH);
-  rightstate = HIGH;
-  righttimer = millis();
-  righttriggred();
+    digitalWrite(led, HIGH);
+    rightstate = HIGH;
+    righttimer = millis();
+    righttriggred();
   }
   
   else {
@@ -99,10 +104,10 @@ void leftsensor() {
   distance2 = (duration2/2) / 29.1;
 
   if (distance2 < 10) {
-  digitalWrite(led2, HIGH);
-  leftstate = HIGH;
-  lefttimer = millis();
-  lefttriggered();
+    digitalWrite(led2, HIGH);
+    leftstate = HIGH;
+    lefttimer = millis();
+    lefttriggered();
   }
   
   else {
