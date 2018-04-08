@@ -9,8 +9,13 @@ const int lftecho = 5;
 const int led2 = 11;
 const int led = 10;
 
-// No delay timer variable
-unsigned long previousMillis = 0;
+// Define the ledstate trackers
+int leftstate = LOW;
+int rightstate = LOW;
+
+// Define delay timer variable
+unsigned long lefttimer;
+unsigned long righttimer;
 
 void setup() {
   Serial.begin (9600);
@@ -24,23 +29,42 @@ void setup() {
 
 // Flashes the lights
 void flash() {
-  for (int i; i = 10; i++) {
+  for (int i = 0; i < 5; i++) {
     digitalWrite(led, HIGH);
-    digitalWrite(led, HIGH);
+    digitalWrite(led2, HIGH);
     delay(250);
     digitalWrite(led, LOW);
-    digitalWrite(led, LOW);
+    digitalWrite(led2, LOW);
+    delay(250);
   }
 }
 
-// triggered by sweeping hand l - r
-//void lefttoright() {
-//unsigned long currentMillis = millis();
-//
-//if (currentMillis - previousMillis >= interval) {
-//  previousMillis = currentMillis;
-//}
-//}
+void righttriggred() {
+  if (leftstate == HIGH) {
+  unsigned long current = millis();
+  unsigned long elapsed = current - lefttimer;
+  if (elapsed < 500) {
+    flash();
+  }
+
+  rightstate = LOW;
+  leftstate = LOW;
+  }
+}
+
+void lefttriggered() {
+  if (rightstate == HIGH) {
+  unsigned long current = millis();
+  unsigned long elapsed = current - righttimer;
+  if (elapsed < 500) {
+    flash();
+  }
+  rightstate = LOW;
+  leftstate = LOW;
+  }
+
+}
+
 
 void rightsensor() {
 long duration, distance;
@@ -50,31 +74,35 @@ long duration, distance;
   delayMicroseconds(10);
   digitalWrite(rgtrig, LOW);
   duration = pulseIn(rgtecho, HIGH);
-  Serial.println(duration);
   distance = (duration/2) / 29.1;
 
   if (distance < 10) {
   digitalWrite(led, HIGH);
+  rightstate = HIGH;
+  righttimer = millis();
+  righttriggred();
   }
   
   else {
     digitalWrite(led, LOW);
   }
-
 }
 
 void leftsensor() {
-    long duration2, distance2;
-   digitalWrite(lftrig, LOW);
+  long duration2, distance2;
+  digitalWrite(lftrig, LOW);
   delayMicroseconds(2);
   digitalWrite(lftrig, HIGH);
   delayMicroseconds(10);
   digitalWrite(lftrig, LOW);
   duration2 = pulseIn(lftecho, HIGH);
-  Serial.println(duration2);
   distance2 = (duration2/2) / 29.1;
+
   if (distance2 < 10) {
   digitalWrite(led2, HIGH);
+  leftstate = HIGH;
+  lefttimer = millis();
+  lefttriggered();
   }
   
   else {
@@ -87,4 +115,6 @@ void loop() {
   rightsensor();
   leftsensor();
   delay(100);
+
+  
 } 
