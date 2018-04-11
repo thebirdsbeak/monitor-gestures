@@ -63,7 +63,7 @@ void lefttriggered() {
     unsigned long elapsed = current - righttimer;
     if (elapsed < 500) {
       flash();
-      Serial.write("right")
+      Serial.write("right");
     }
   rightstate = LOW;
   leftstate = LOW;
