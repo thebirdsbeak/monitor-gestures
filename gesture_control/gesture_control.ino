@@ -11,8 +11,8 @@ const int lftrig = 6;
 const int lftecho = 5;
 
 // Define the led pins
-const int led2 = 11;
-const int led = 10;
+const int led2 = 10;
+const int led = 11;
 
 // Define the ledstate trackers
 int leftstate = LOW;
@@ -50,7 +50,7 @@ void righttriggred() {
     unsigned long elapsed = current - lefttimer;
     if (elapsed < 500) {
       flash();
-      Serial.write("left");
+      Serial.println("A");
     }
   rightstate = LOW;
   leftstate = LOW;
@@ -63,7 +63,7 @@ void lefttriggered() {
     unsigned long elapsed = current - righttimer;
     if (elapsed < 500) {
       flash();
-      Serial.write("right");
+      Serial.println("B");
     }
   rightstate = LOW;
   leftstate = LOW;
@@ -80,8 +80,7 @@ void rightsensor() {
   digitalWrite(rgtrig, LOW);
   duration = pulseIn(rgtecho, HIGH);
   distance = (duration/2) / 29.1;
-
-  if (distance < 10) {
+  if (distance < 20) {
     digitalWrite(led, HIGH);
     rightstate = HIGH;
     righttimer = millis();
@@ -103,7 +102,7 @@ void leftsensor() {
   duration2 = pulseIn(lftecho, HIGH);
   distance2 = (duration2/2) / 29.1;
 
-  if (distance2 < 10) {
+  if (distance2 < 20) {
     digitalWrite(led2, HIGH);
     leftstate = HIGH;
     lefttimer = millis();
